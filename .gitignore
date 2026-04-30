@@ -1,0 +1,34 @@
+# macOS
+.DS_Store
+
+# Scrape logs
+scrape_*.log
+
+# Original 1896-2016 CSV — downloaded on demand, not committed (40 MB)
+athlete_events.csv
+
+# Per-edition intermediate checkpoints (rebuilt by re-running the scrape)
+checkpoints/
+
+# Intermediate per-phase outputs (rebuilt by the pipeline)
+new_athletes_2018_2022.csv
+new_athletes_2020_2024.csv
+new_athletes_2026.csv
+new_athletes_team_rosters.csv
+new_athletes_athletics_relays.csv
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+*.Rcheck/
+*.tar.gz
+
+# Git setup instructions
+git_repo_create.md

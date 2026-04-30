@@ -1,0 +1,25 @@
+ID,Name,Sex,Age,Height,Weight,Team,NOC,Games,Year,Season,City,Sport,Event,Medal
+1000001,Quentin Fillon Maillet,M,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 10 kilometres Sprint",Gold
+1000002,Vetle Sjastad Christiansen,M,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 10 kilometres Sprint",Silver
+1000003,Sturla Holm Laegreid,M,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 10 kilometres Sprint",Bronze
+1000004,Martin Ponsiluoma,M,NA,NA,NA,Sweden,SWE,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 12.5 kilometres Pursuit",Gold
+1000005,Sturla Holm Laegreid,M,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 12.5 kilometres Pursuit",Silver
+1000006,Emilien Jacquelin,M,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 12.5 kilometres Pursuit",Bronze
+1000007,Johannes Dale-Skjevdal,M,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 15 kilometres Mass Start",Gold
+1000008,Sturla Holm Laegreid,M,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 15 kilometres Mass Start",Silver
+1000009,Quentin Fillon Maillet,M,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 15 kilometres Mass Start",Bronze
+1000010,Johan-Olav Botn,M,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 20 kilometres",Gold
+1000011,Eric Perrot,M,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 20 kilometres",Silver
+1000012,Sturla Holm Laegreid,M,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Men's 20 kilometres",Bronze
+1000013,Maren Kirkeeide,F,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 7.5 kilometres Sprint",Gold
+1000014,Oceane Michelon,F,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 7.5 kilometres Sprint",Silver
+1000015,Lou Jeanmonnot,F,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 7.5 kilometres Sprint",Bronze
+1000016,Lisa Vittozzi,F,NA,NA,NA,Italy,ITA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 10 kilometres Pursuit",Gold
+1000017,Maren Kirkeeide,F,NA,NA,NA,Norway,NOR,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 10 kilometres Pursuit",Silver
+1000018,Suvi Minkkinen,F,NA,NA,NA,Finland,FIN,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 10 kilometres Pursuit",Bronze
+1000019,Oceane Michelon,F,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 12.5 kilometres Mass Start",Gold
+1000020,Julia Simon,F,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 12.5 kilometres Mass Start",Silver
+1000021,Tereza Vobornikova,F,NA,NA,NA,Czechia,CZE,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 12.5 kilometres Mass Start",Bronze
+1000022,Julia Simon,F,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 15 kilometres",Gold
+1000023,Lou Jeanmonnot,F,NA,NA,NA,France,FRA,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 15 kilometres",Silver
+1000024,Lora Hristova,F,NA,NA,NA,Bulgaria,BUL,2026 Winter,2026,Winter,Milano-Cortina,Biathlon,"Biathlon Women's 15 kilometres",Bronze
