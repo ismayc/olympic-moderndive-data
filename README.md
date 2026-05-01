@@ -16,6 +16,8 @@ olympic-moderndive-data/
 ├── scripts/
 │   ├── scrape_olympedia.py                # main scraper (Python)
 │   ├── scrape_olympedia.R                 # reference R port (predates v0.1, not maintained)
+│   ├── scrape_edition_metadata.py         # refresh data/edition_metadata.csv from olympedia
+│   ├── scrape_medal_tables.py             # refresh data/medal_table_summary.csv from olympedia
 │   ├── refetch_multi_athlete_events.py    # targeted refetch for multi-athlete-row events
 │   ├── refetch_athletics_relays.py        # targeted refetch for Athletics relays
 │   ├── merge_new_editions.py              # concat per-edition CSVs + dedupe + bio backfill
@@ -26,8 +28,8 @@ olympic-moderndive-data/
 │   ├── edition_NN_individual.csv          # individual-events scrape output
 │   └── edition_NN_team.csv                # team-events refetch output
 ├── data/
-│   ├── edition_metadata.csv               # verified facts about each new edition
-│   └── medal_table_summary.csv            # full medal tables for each new edition
+│   ├── edition_metadata.csv               # facts about every edition 1896-2026 (62 rows; 5 cancelled)
+│   └── medal_table_summary.csv            # full medal tables for every held edition (1929 rows; 1896-2026)
 └── sample/
     └── sample_athlete_events.csv          # 24 verified rows showing the schema
 ```
@@ -42,7 +44,7 @@ The original rgriff23 dataset contained 271,116 athlete-event rows scraped from 
 | 2020 Tokyo Summer (held 2021) | 61 | 11,319 | 206 | 339 | 49 |
 | 2022 Beijing Winter     | 62  | 2,786   | 91   | 109 | 15 |
 | 2024 Paris Summer       | 63  | 10,763  | 206  | 329 | 47 |
-| 2026 Milano-Cortina Winter | 72 | 2,932 | 94 | 111 | 16 |
+| 2026 Milano-Cortina Winter | 72 | 2,807 | 93 | 116 | 16 |
 
 Sources are linked in `data/edition_metadata.csv`. Counts come from olympedia's edition pages.
 
@@ -71,6 +73,17 @@ The output keeps the same 15 columns as the original `athlete_events.csv` so exi
 ## How to produce the full dataset
 
 The end-to-end pipeline is **scrape → refetch (multi-athlete events) → merge → combine**, with dedicated scripts at each stage. Total wall-clock for a full rebuild is **~24-30 hours** at the polite 4s request delay olympedia requires (do not lower this — see the rate-limit note below).
+
+### Step 0 (optional): Refresh `data/edition_metadata.csv` and `data/medal_table_summary.csv`
+
+Both committed CSVs cover every edition 1896-2026, so you only need to re-run these when you want to pick up post-Games updates olympedia has made (participant counts, medal counts, retroactive medal redistributions, NOC re-codings) or extend coverage to a future edition. Each takes ~4-5 minutes at the 4s polite delay.
+
+```bash
+python scripts/scrape_edition_metadata.py --out data/edition_metadata.csv --delay 4.0
+python scripts/scrape_medal_tables.py     --out data/medal_table_summary.csv --delay 4.0
+```
+
+`scrape_edition_metadata.py` preserves any non-empty `notes` already in its target file, so the hand-curated political/contextual notes for editions 60/61/62/63/72 (and any others you've added) survive a re-scrape. Both scripts accept `--editions <id> [<id> ...]` to refresh just a subset.
 
 ### Step 1: Get the original 1896-2016 CSV
 
@@ -177,8 +190,8 @@ python scripts/audit_v2.py       # vs immediately-prior comparable Games (catche
 
 The `data/` folder is independently useful even without the full scrape:
 
-- **`edition_metadata.csv`** — verified facts about each new edition (year, season, city, opening/closing dates, participant counts).
-- **`medal_table_summary.csv`** — full medal table for every new edition. Group by NOC across this and a medal extract from the original CSV to get country-level medal counts through 2026.
+- **`edition_metadata.csv`** — facts about every Olympic edition from Athens 1896 through Milano-Cortina 2026 (62 rows). Schema: `edition_id, games, year, season, city, country, opening_ceremony, closing_ceremony, participants, nocs, medal_events, disciplines, notes, source`. Includes the 1906 Athens Intercalated Games (labelled `Summer` to match the original `athlete_events.csv`), the 1956 Stockholm Equestrian sub-edition, and the five cancelled editions (1916 Berlin, 1940 Helsinki, 1940 Garmisch-Partenkirchen, 1944 London, 1944 Cortina d'Ampezzo) with `participants`/`nocs`/`medal_events`/`disciplines` left empty and a `Cancelled due to ...` note. All values come from olympedia's `/editions/<id>` Facts table; refresh with `scripts/scrape_edition_metadata.py` (see Step 0 below).
+- **`medal_table_summary.csv`** — full medal table for every held edition from Athens 1896 through Milano-Cortina 2026 (1929 rows; 57 editions; the five cancelled editions are omitted). Schema: `edition_id, games, year, season, noc, country, gold, silver, bronze, total, notes`. Counts use the IOC convention (one team gold = one row in the table, not one per roster member). The `notes` column flags rows with a known deviation reason — composite or neutral teams (`MIX`, `EUA`, `EUN`, `OAR`/`ROC`, `AIN`, `IOA`, `IOP`, `EOR`, `ANZ`, `BWI`, `UAR`), defunct-state NOCs (`URS`, `TCH`, `YUG`, `GDR`, `FRG`, `BOH`), and edition-level oddities (the 1906 Intercalated Games, the 1956 Stockholm Equestrian sub-edition, and the 2018 PyeongChang delegation that olympedia retroactively re-codes from OAR to ROC). Rows for ordinary current NOCs have an empty `notes`. Refresh with `scripts/scrape_medal_tables.py` (same shape as Step 0 above).
 
 If you just want the `athlete_events_through_2026.csv` and don't want to run the scrape yourself, the **[`moderndive/olympicAthletes`](https://github.com/moderndive/olympicAthletes)** R package ships it pre-built (3.2 MB compressed `.rda`).
 
