@@ -134,13 +134,14 @@ done
 
 ### Step 4: Refetch team-event rosters and other multi-athlete-row events
 
-The individual scrape catches per-athlete result rows but misses team-event rosters (Football, Hockey, Volleyball, Curling, Ice Hockey, …) and multi-athlete-per-row events (Athletics relays, Rowing crews, Equestrian Team, Tennis Doubles, …). Two targeted scripts handle this — **fast** (~10-15 minutes for the team script, ~1-2 hours for the multi-athlete script):
+The individual scrape catches per-athlete result rows but misses team-event rosters (Football, Hockey, Volleyball, Curling, Ice Hockey, …) and multi-athlete-per-row events (Athletics relays, Rowing crews, Equestrian Team, Tennis Doubles, …). Two targeted scripts handle this. Both now **fetch athlete bios by default** (Sex/Age/Height/Weight), so team-roster and multi-athlete-row athletes get the same bio fields as the individual scrape. That makes them slower than they used to be — budget ~10-12 hours for the team script across all five editions and ~3-4 hours for the multi-athlete script, all at the 4 s polite delay:
 
 ```bash
 # Team-event rosters (Ice Hockey, Curling, Bobsleigh, Football, Basketball, etc.)
+# Drop --skip-bio (the historical default) so each roster athlete gets a bio.
 python scripts/scrape_olympedia.py \
   --editions 60 61 62 63 72 \
-  --team-events-only --skip-bio \
+  --team-events-only \
   --out new_athletes_team_rosters.csv \
   --delay 4.0
 
@@ -150,11 +151,13 @@ done
 
 # Multi-athlete events (Rowing crews, Athletics relays, Equestrian Team,
 # Cycling Track Pursuit, Sailing crews, Tennis/Badminton/Table Tennis Doubles,
-# Fencing Team, Rugby Sevens, Figure Skating Pairs/Team, Luge Doubles)
-python scripts/refetch_multi_athlete_events.py
+# Fencing Team, Rugby Sevens, Figure Skating Pairs/Team, Luge Doubles).
+# Bios are fetched by default; pass --skip-bio for the old NA-bio behaviour,
+# or --editions 72 to restrict to a single edition.
+python scripts/refetch_multi_athlete_events.py --delay 4.0
 ```
 
-The second script writes `new_athletes_multi_athlete_supplement.csv`. Sailing and Athletics relays each have separate small refetch scripts you can also run if needed (`refetch_athletics_relays.py`).
+The second script writes `new_athletes_multi_athlete_supplement.csv`. Sailing and Athletics relays each have separate small refetch scripts you can also run if needed (`refetch_athletics_relays.py`). If you only want to *refresh bios* on an existing dataset (rather than rebuild from scratch), see `REFRESH_BIOS.md`.
 
 ### Step 5: Merge the new-edition CSVs
 
@@ -204,17 +207,17 @@ If you just want the `athlete_events_through_2026.csv` and don't want to run the
 | Year | Season | Scraped | Olympedia | Δ |
 |---|---|---|---|---|
 | 2018 | Winter | 2,921 | 2,793 | +4.6% |
-| 2020 | Summer | 11,533 | 11,319 | +1.9% |
+| 2020 | Summer | 11,533 | 11,318 | +1.9% |
 | 2022 | Winter | 2,901 | 2,786 | +4.1% |
 | 2024 | Summer | 10,835 | 10,763 | +0.7% |
 | 2026 | Winter | 2,903 | 2,932 | -1.0% |
 
-Several editions are slightly *over* the reference — the scraper picks up DNS/DNF/heat-only athletes that olympedia's headline "participants" count excludes. The 2026 number will likely tick up as olympedia finishes filling in post-Games roster details (a scheduled refresh job is planned for May 2026).
+Several editions are slightly *over* the reference — the scraper picks up DNS/DNF/heat-only athletes that olympedia's headline "participants" count excludes. A June 2026 re-check found olympedia's headline participant counts essentially unchanged from the original scrape (only Tokyo 2020 moved, 11,319 → 11,318), so the athlete *roster* is stable. What olympedia *had* filled in since the Games was athlete **bios** for team/multi-athlete-row events — see the bio-coverage note below and `REFRESH_BIOS.md`.
 
 ## What's verified vs. what's mechanical
 
 - **Verified (cross-checked across olympedia.org and Wikipedia/IOC):** every row in `data/edition_metadata.csv`, every row in `data/medal_table_summary.csv`, and every row in `sample/sample_athlete_events.csv` (the 2026 biathlon medal winners).
-- **Produced mechanically by the scraper:** all the non-medal rows in the full dataset (athletes who competed but didn't medal) and the bio fields (height, weight, age). These are pulled directly from olympedia at scrape time and depend on whatever olympedia has for each athlete. Bio coverage degrades for newer/larger Games (~80% Height/Weight for 2018 Winter; ~25% for Paris 2024 / Milano-Cortina 2026) — same pattern as the original 1896-2016 dataset (which is missing height for ~33,900 athletes).
+- **Produced mechanically by the scraper:** all the non-medal rows in the full dataset (athletes who competed but didn't medal) and the bio fields (height, weight, age). These are pulled directly from olympedia at scrape time and depend on whatever olympedia has for each athlete. After the June 2026 bio refresh (`REFRESH_BIOS.md`), **Age is ~100% across all five new editions** and Height/Weight coverage is: 2018 Winter ~96% H / ~93% W, 2022 Winter ~59% / ~53%, 2020 Summer ~55% / ~46%, 2026 Winter ~37% / ~33%, 2024 Summer ~34% / ~29%. Coverage is highest for Winter team sports (Ice Hockey rosters are near-complete on olympedia) and lowest for the largest/most-recent Summer Games, where olympedia simply hasn't published measurements for many athletes — same pattern as the original 1896-2016 dataset (which is missing height for ~33,900 athletes).
 
 ## Differences from the original rgriff23 methodology
 

@@ -122,7 +122,7 @@ class Fetcher:
             if wait > 0:
                 time.sleep(wait)
             try:
-                resp = self.session.get(url, timeout=30)
+                resp = self.session.get(url, timeout=60)
             except requests.exceptions.RequestException as exc:
                 # Network-level failure (ConnectionReset, Timeout, ChunkedEncodingError, ...)
                 last_exc = exc
@@ -437,8 +437,15 @@ def scrape_edition(
                     bio = {"Sex": None, "Height": None, "Weight": None, "Born": None}
                 else:
                     if ath_path not in bio_cache:
-                        bio_soup = fetcher.get(ath_path)
-                        bio_cache[ath_path] = parse_athlete_bio(bio_soup)
+                        try:
+                            bio_cache[ath_path] = parse_athlete_bio(fetcher.get(ath_path))
+                        except Exception as exc:
+                            # A persistent fetch failure on ONE athlete page (e.g. an
+                            # olympedia slow window that exhausts get()'s retries) must
+                            # not kill a multi-hour run. Log it, cache an empty bio so we
+                            # don't re-hit it this run, and carry on.
+                            print(f"     [bio-skip] {ath_path}: {type(exc).__name__}; leaving bio empty", flush=True)
+                            bio_cache[ath_path] = {"Sex": None, "Height": None, "Weight": None, "Born": None}
                     bio = bio_cache[ath_path]
 
                 rows.append(AthleteRow(
